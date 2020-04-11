@@ -2,9 +2,17 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.concurrent.Flow;
 
-public class Frame extends JFrame {
+public class Frame extends JFrame implements ActionListener {
+    private ArrayList <Product> ProductArray  = new ArrayList<Product>();
+    private Product product_ref;
+    private Double d;
+    private int x , flag;
+
     // for the north we need 5 labels and 4 text fields and 2 buttons
     private JPanel northPanel ,p1 , p2 ,p3 , p4;
     private JLabel bigLabel , barcodeLabel , productLabel , priceLabel , quantityLabel;
@@ -66,6 +74,8 @@ public class Frame extends JFrame {
         //for the buttons
         insert = new JButton(" Insert ");
         clear = new JButton(" Clear ");
+        clear.addActionListener(this);
+        insert.addActionListener(this);
         //for the first panel
         bigLabel = new JLabel("New Product :");
         bigLabel.setFont(blueFon);
@@ -168,4 +178,38 @@ public class Frame extends JFrame {
         add(southPanel,BorderLayout.SOUTH);
 
     }//public construtor
+
+    public void actionPerformed(ActionEvent event){
+        if(event.getSource() == clear){
+            //clear buttons
+            clearText(text1,text2,text3,text4);
+        }
+        else if(event.getSource() == insert){
+            //for insert button
+            if (text1.getText().isEmpty() || text2.getText().isEmpty() || text3.getText().isEmpty() || text4.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null , "Please fill all the textfields !" , "Warning!" , JOptionPane.WARNING_MESSAGE);
+            }
+            else {
+                product_ref = new Product();
+                product_ref.setBardcod(text1.getText());
+                product_ref.setName(text2.getText());
+                d = Double.parseDouble(text3.getText());
+                product_ref.setPrice(d);
+                x = Integer.parseInt(text4.getText());
+                product_ref.setQuantity(x);
+                ProductArray.add(product_ref);
+                JOptionPane.showMessageDialog(null, "You added \nBarcod : " + text1.getText() + "\nName : " + text2.getText() + "" +
+                        "\nPrice : " + text3.getText() + "\nQuantitiy : " + text4.getText());
+                clearText(text1, text2, text3, text4);
+
+                }
+            }
+        }
+
+    public void clearText(JTextField t1 , JTextField t2 , JTextField t3 , JTextField t4){
+        t1.setText("");
+        t2.setText("");
+        t3.setText("");
+        t4.setText("");
+    }
 }//class
