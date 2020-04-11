@@ -37,7 +37,7 @@ public class Frame extends JFrame {
         setLayout(borderLayout);
 
         container = getContentPane();
-        container.setBackground(Color.pink);
+        container.setBackground(Color.pink); // so that the lines can show up between borders
         northPanel = new JPanel();
         p1 = new JPanel();
         p2 = new JPanel();
@@ -87,7 +87,7 @@ public class Frame extends JFrame {
         p6 = new JPanel();
         p7 = new JPanel();
         p8 = new JPanel();
-        l1 = new JLabel(" Choose one choice :");
+        l1 = new JLabel("Choose one choice :");
         l1.setFont(new Font("Garamond" ,1,16));
         l1.setForeground(Color.GREEN);
         centerPanel = new JPanel();
@@ -105,7 +105,7 @@ public class Frame extends JFrame {
         findText = new JTextField(30);
 
         //adding for center -textArea
-        big = new JTextArea(120,60);
+        big = new JTextArea(20,100);
         big.setEditable(false);
 
 
@@ -134,19 +134,20 @@ public class Frame extends JFrame {
 
         // for the Center borderlayout
 
-        centerPanel.setLayout(new GridLayout(4,0));
-        p5.setLayout(new FlowLayout(FlowLayout.LEFT));
+        centerPanel.setLayout(new GridLayout(3,2));
+        p5.setLayout(new GridLayout(0,3));
         p5.add(searchLabel);
-        p6.setLayout(new GridLayout(1,2));
+        p6.setLayout(new FlowLayout(FlowLayout.LEFT));
         p6.add(l1);
         p6.add(barcode);
         p6.add(product);
+        //centerPanel.add(p5);
         centerPanel.add(p5);
         centerPanel.add(p6);
-        p7.add(find);
-        p7.add(findText);
-        p7.setLayout(new FlowLayout(FlowLayout.LEFT));
-        centerPanel.add(p7);
+        p6.add(find);
+        p6.add(findText);
+        //p5.setLayout(new FlowLayout(FlowLayout.LEFT));
+
         p8.add(big);
         centerPanel.add(p8);
         add(centerPanel , BorderLayout.CENTER);
