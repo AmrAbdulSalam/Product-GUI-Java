@@ -12,7 +12,8 @@ public class Frame extends JFrame implements ActionListener {
     private Product product_ref;
     private Double d;
     private int x , flag;
-
+    private String output;
+    private Box box;
     // for the north we need 5 labels and 4 text fields and 2 buttons
     private JPanel northPanel ,p1 , p2 ,p3 , p4;
     private JLabel bigLabel , barcodeLabel , productLabel , priceLabel , quantityLabel;
@@ -43,7 +44,7 @@ public class Frame extends JFrame implements ActionListener {
         super("Store inventory");
         borderLayout = new BorderLayout(0,2);
         setLayout(borderLayout);
-
+        output = "";
         container = getContentPane();
         container.setBackground(Color.pink); // so that the lines can show up between borders
         northPanel = new JPanel();
@@ -67,6 +68,7 @@ public class Frame extends JFrame implements ActionListener {
         newLabel = new JLabel("New Value");
         secondText = new JTextField(20);
         update = new JButton(" Update ");
+        update.addActionListener(this);
         //finsh south
 
         blueFon = new Font("Garamond",3 ,20);
@@ -112,12 +114,12 @@ public class Frame extends JFrame implements ActionListener {
 
         //adding for center find and textfield
         find = new JButton(" Find ");
+        find.addActionListener(this);
         findText = new JTextField(30);
 
         //adding for center -textArea
-        big = new JTextArea(20,100);
+        big = new JTextArea(200,70);
         big.setEditable(false);
-
 
         //for adding to north border
         northPanel.setLayout(new GridLayout(4 ,4));
@@ -153,11 +155,12 @@ public class Frame extends JFrame implements ActionListener {
         p6.add(product);
         //centerPanel.add(p5);
         centerPanel.add(p5);
-        centerPanel.add(p6);
+
         p6.add(find);
         p6.add(findText);
         //p5.setLayout(new FlowLayout(FlowLayout.LEFT));
-
+        //p6.setPreferredSize(new Dimension(10,10));
+        centerPanel.add(p6);
         p8.add(big);
         centerPanel.add(p8);
         add(centerPanel , BorderLayout.CENTER);
@@ -180,14 +183,45 @@ public class Frame extends JFrame implements ActionListener {
     }//public construtor
 
     public void actionPerformed(ActionEvent event){
+
         if(event.getSource() == clear){
             //clear buttons
             clearText(text1,text2,text3,text4);
+        }
+        else if(event.getSource() == update){
+            if(comboBox.getSelectedIndex() == 0){
+                JOptionPane.showMessageDialog(null , "You should choose from the list to make an update!","Warrning" ,JOptionPane.WARNING_MESSAGE);
+            }
+            else{
+                for(Product p : ProductArray){
+                    if(p.getBardcod().equals(text.getText())){
+                        if(comboBox.getSelectedItem() == "Product"){
+                            //System.out.println("inside product");
+                            JOptionPane.showMessageDialog(null , "You change : " +p.getName()+"\nTo : " +secondText.getText());
+                            p.setName(secondText.getText());
+                        }
+                        else if(comboBox.getSelectedItem() == "Price"){
+                            //System.out.println("inside price");
+                            JOptionPane.showMessageDialog(null , "You change : " +p.getPrice()+"\nTo : " +secondText.getText());
+                            p.setPrice(Double.parseDouble(secondText.getText()));
+                        }
+                        else if(comboBox.getSelectedItem() == "Quantity"){
+                            //System.out.println("inside quantity");
+                            JOptionPane.showMessageDialog(null , "You change : " +p.getQuantity()+"\nTo : " +secondText.getText());
+                            p.setQuantity(Integer.parseInt(secondText.getText()));
+                        }
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null , "No barcod found");
+                    }
+                }
+            }
         }
         else if(event.getSource() == insert){
             //for insert button
             if (text1.getText().isEmpty() || text2.getText().isEmpty() || text3.getText().isEmpty() || text4.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null , "Please fill all the textfields !" , "Warning!" , JOptionPane.WARNING_MESSAGE);
+                clearText(text1,text2,text3,text4);
             }
             else {
                 product_ref = new Product();
@@ -204,7 +238,38 @@ public class Frame extends JFrame implements ActionListener {
 
                 }
             }
-        }
+        else if(event.getSource() == find){
+            //System.out.println("Inside find");
+            if (barcode.isSelected()){
+                //System.out.println("barcod");
+                for(Product p : ProductArray){
+                    if(findText.getText().contains(p.getBardcod())){
+                        output = p.getBardcod() + "\t\t" +p.getName() +"\t\t" + p.getPrice()+"\t\t" +p.getQuantity() ;
+                        big.setText(output);
+                        System.out.println();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Not Found!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
+                }
+            }
+            else if(product.isSelected()){
+
+                for(Product p : ProductArray){
+                    if(findText.getText().equals(p.getName())){
+                        output += p.getBardcod() + "\t\t" +p.getName() +"\t\t" + p.getPrice()+"\t\t" +p.getQuantity() +"\n";
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Not Found!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
+                }
+                big.setText(output);
+            }
+
+        }//end of the else of handler
+        }//action performed function
 
     public void clearText(JTextField t1 , JTextField t2 , JTextField t3 , JTextField t4){
         t1.setText("");
