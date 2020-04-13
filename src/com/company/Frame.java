@@ -209,40 +209,38 @@ public class Frame extends JFrame implements ActionListener {
             if(comboBox.getSelectedIndex() == 0){
                 JOptionPane.showMessageDialog(null , "You should choose from the list to make an update!","Warrning" ,JOptionPane.WARNING_MESSAGE);
             }
-            else{
-                for(Product p : ProductArray){
-                    if(p.getBardcod().equals(text.getText())){
-                        if(comboBox.getSelectedItem() == "Product" && !secondText.getText().isEmpty()){
-                            //System.out.println("inside product");
-                            JOptionPane.showMessageDialog(null , "You change : " +p.getName()+"\nTo : " +secondText.getText());
-                            p.setName(secondText.getText());
-                            secondText.setText("");
-                            break;
-                        }
-                        else if(comboBox.getSelectedItem() == "Price" && !secondText.getText().isEmpty()){
-                            //System.out.println("inside price");
-                            JOptionPane.showMessageDialog(null , "You change : " +p.getPrice()+"\nTo : " +secondText.getText());
-                            p.setPrice(Double.parseDouble(secondText.getText()));
-                            secondText.setText("");
-                            break;
-                        }
-                        else if(comboBox.getSelectedItem() == "Quantity" && !secondText.getText().isEmpty()){
-                            //System.out.println("inside quantity");
-                            JOptionPane.showMessageDialog(null , "You change : " +p.getQuantity()+"\nTo : " +secondText.getText());
-                            p.setQuantity(Integer.parseInt(secondText.getText()));
-                            secondText.setText("");
-                            break;
-                        }
-                        else {
-                            JOptionPane.showMessageDialog(null, "Text cannot be emphty");
-                            break;
+            else {
+                    for (Product p : ProductArray) {
+                        if (p.getBardcod().equals(text.getText())) {
+                            if (comboBox.getSelectedItem() == "Product" && !secondText.getText().isEmpty()) {
+                                //System.out.println("inside product");
+                                JOptionPane.showMessageDialog(null, "You change : " + p.getName() + "\nTo : " + secondText.getText());
+                                p.setName(secondText.getText());
+                                secondText.setText("");
+                                break;
+                            } else if (comboBox.getSelectedItem() == "Price" && !secondText.getText().isEmpty() && !isString(secondText.getText())) {
+                                //System.out.println("inside price");
+                                JOptionPane.showMessageDialog(null, "You change : " + p.getPrice() + "\nTo : " + secondText.getText());
+                                p.setPrice(Double.parseDouble(secondText.getText()));
+                                secondText.setText("");
+                                break;
+                            } else if (comboBox.getSelectedItem() == "Quantity" && !secondText.getText().isEmpty() && !isString(secondText.getText())) {
+                                //System.out.println("inside quantity");
+                                JOptionPane.showMessageDialog(null, "You change : " + p.getQuantity() + "\nTo : " + secondText.getText());
+                                p.setQuantity(Integer.parseInt(secondText.getText()));
+                                secondText.setText("");
+                                break;
+                            } else {
+                                JOptionPane.showMessageDialog(null, "invalid input");
+                                break;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No barcod found");
                         }
                     }
-                    else{
-                        JOptionPane.showMessageDialog(null , "No barcod found");
-                    }
-                }
+
             }
+
         }
         else if(event.getSource() == insert) {
             //for insert button
@@ -316,19 +314,16 @@ public class Frame extends JFrame implements ActionListener {
                        big.setText(output);
                        fl++;
                    }
-
                }
                if (fl == 0)
                    JOptionPane.showMessageDialog(null , "No Matches found!");
-
             }
             else if(product.isSelected()){
                 for (Product p : ProductArray){
-                    arr = findText.getText().trim();
-                    System.out.println(arr);
+                    //arr = findText.getText().trim();
+                    //System.out.println(arr);
                     if (findText.getText().contains(p.getName())){
                         output += p.getBardcod() +"\t\t\t" + p.getName() +"\t\t\t" +p.getPrice() +"\t\t" + p.getQuantity() + "\n";
-
                         fl++;
                     }
                 }
