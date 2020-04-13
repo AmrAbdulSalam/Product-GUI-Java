@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Flow;
 
@@ -11,7 +12,7 @@ public class Frame extends JFrame implements ActionListener {
     private ArrayList <Product> ProductArray  = new ArrayList<Product>();
     private Product product_ref;
     private Double d;
-    private int x , flag = 0 , flag1;
+    private int x , flag = 0 , flag1 ,fl;
     private String output;
     private Box box;
     // for the north we need 5 labels and 4 text fields and 2 buttons
@@ -22,7 +23,8 @@ public class Frame extends JFrame implements ActionListener {
     private JButton insert , clear;
     private Container container;
     private BorderLayout borderLayout;
-
+    private JScrollPane jp;
+    private String arr;
     //for the center we need 1 label and 2 radiobuttons and button and 1 textfield
 
     private JLabel searchLabel , l1;
@@ -40,6 +42,7 @@ public class Frame extends JFrame implements ActionListener {
     private JTextField  text , secondText;
     private JButton update;
     private String names[] = {"-------------","Product" , "Price" , "Quantity"};
+    private char tokens[];
     public Frame(){
         super("Store inventory");
         borderLayout = new BorderLayout(0,4);
@@ -57,7 +60,6 @@ public class Frame extends JFrame implements ActionListener {
         southPanel = new JPanel();
         p9 = new JPanel();
         p10 = new JPanel();
-
         updateLabel = new JLabel("Update Product :");
         updateLabel.setForeground(Color.cyan);
 
@@ -117,11 +119,14 @@ public class Frame extends JFrame implements ActionListener {
         find = new JButton(" Find ");
         find.addActionListener(this);
         findText = new JTextField(30);
-
+        //arr = new String[5];
         //adding for center -textArea
-        big = new JTextArea(20,60);
+        big = new JTextArea(4,73);
         big.setEditable(false);
 
+        jp = new JScrollPane(big);
+        jp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tokens = new char[10];
         //for adding to north border
         northPanel.setLayout(new GridLayout(4 ,4));
         //bigLabel.setHorizontalAlignment(FlowLayout.LEFT);
@@ -169,8 +174,9 @@ public class Frame extends JFrame implements ActionListener {
         //p5.setLayout(new FlowLayout(FlowLayout.LEFT));
         //p6.setPreferredSize(new Dimension(10,10));
         centerPanel.add(p6);
-        p8.add(big);
+        p8.add(jp);
         p8.setBackground(c1);
+
         centerPanel.add(p8);
         add(centerPanel , BorderLayout.CENTER);
 
@@ -211,21 +217,26 @@ public class Frame extends JFrame implements ActionListener {
                             JOptionPane.showMessageDialog(null , "You change : " +p.getName()+"\nTo : " +secondText.getText());
                             p.setName(secondText.getText());
                             secondText.setText("");
+                            break;
                         }
                         else if(comboBox.getSelectedItem() == "Price" && !secondText.getText().isEmpty()){
                             //System.out.println("inside price");
                             JOptionPane.showMessageDialog(null , "You change : " +p.getPrice()+"\nTo : " +secondText.getText());
                             p.setPrice(Double.parseDouble(secondText.getText()));
                             secondText.setText("");
+                            break;
                         }
                         else if(comboBox.getSelectedItem() == "Quantity" && !secondText.getText().isEmpty()){
                             //System.out.println("inside quantity");
                             JOptionPane.showMessageDialog(null , "You change : " +p.getQuantity()+"\nTo : " +secondText.getText());
                             p.setQuantity(Integer.parseInt(secondText.getText()));
                             secondText.setText("");
+                            break;
                         }
-                        else
-                            JOptionPane.showMessageDialog(null , "Text cannot be emphty");
+                        else {
+                            JOptionPane.showMessageDialog(null, "Text cannot be emphty");
+                            break;
+                        }
                     }
                     else{
                         JOptionPane.showMessageDialog(null , "No barcod found");
@@ -241,17 +252,44 @@ public class Frame extends JFrame implements ActionListener {
                     clearText(text1, text2, text3, text4);
                 }
                 else {
-                    flag1 = 0;
-                    for(Product p : ProductArray){
-                        if(text1.getText().matches(p.getBardcod())){
-                            JOptionPane.showMessageDialog(null ,"The barcod is already exists!" ,"Error" ,JOptionPane.ERROR_MESSAGE);
-                            text1.setText("");
-                            flag1++;
-                            break;
-                        }
+                    if (isString(text3.getText()) || isString(text4.getText()))
+                        JOptionPane.showMessageDialog(null, "Invalid number!!", "Error", JOptionPane.ERROR_MESSAGE);
+                    else {
+                        flag1 = 0;
+                        for (Product p : ProductArray) {
+                            if (text1.getText().matches(p.getBardcod())) {
+                                JOptionPane.showMessageDialog(null, "The barcod is already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                                text1.setText("");
+                                flag1++;
+                                break;
+                            }
 
+                        }
+                        if (flag1 == 0) {
+                            product_ref = new Product();
+                            product_ref.setBardcod(text1.getText());
+                            product_ref.setName(text2.getText());
+                            d = Double.parseDouble(text3.getText());
+                            product_ref.setPrice(d);
+                            x = Integer.parseInt(text4.getText());
+                            product_ref.setQuantity(x);
+                            ProductArray.add(product_ref);
+                            JOptionPane.showMessageDialog(null, "You added \nBarcod : " + text1.getText() + "\nName : " + text2.getText() + "" +
+                                    "\nPrice : " + text3.getText() + "\nQuantitiy : " + text4.getText());
+                            clearText(text1, text2, text3, text4);
+                        }
                     }
-                    if(flag1 == 0){
+                }
+            }
+            else if (flag == 0) {
+                if (text1.getText().isEmpty() || text2.getText().isEmpty() || text3.getText().isEmpty() || text4.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill all the textfields !", "Warning!", JOptionPane.WARNING_MESSAGE);
+                    clearText(text1, text2, text3, text4);
+                } else {
+                    if(isString(text3.getText()) || isString(text4.getText()))
+                       JOptionPane.showMessageDialog(null , "Invalid number!!" ,"Error" ,JOptionPane.ERROR_MESSAGE);
+
+                    else {
                         product_ref = new Product();
                         product_ref.setBardcod(text1.getText());
                         product_ref.setName(text2.getText());
@@ -263,62 +301,44 @@ public class Frame extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(null, "You added \nBarcod : " + text1.getText() + "\nName : " + text2.getText() + "" +
                                 "\nPrice : " + text3.getText() + "\nQuantitiy : " + text4.getText());
                         clearText(text1, text2, text3, text4);
-
+                        flag++;
                     }
-
-                }
-            }
-            else if (flag == 0) {
-                if (text1.getText().isEmpty() || text2.getText().isEmpty() || text3.getText().isEmpty() || text4.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please fill all the textfields !", "Warning!", JOptionPane.WARNING_MESSAGE);
-                    clearText(text1, text2, text3, text4);
-                } else {
-                    product_ref = new Product();
-                    product_ref.setBardcod(text1.getText());
-                    product_ref.setName(text2.getText());
-                    d = Double.parseDouble(text3.getText());
-                    product_ref.setPrice(d);
-                    x = Integer.parseInt(text4.getText());
-                    product_ref.setQuantity(x);
-                    ProductArray.add(product_ref);
-                    JOptionPane.showMessageDialog(null, "You added \nBarcod : " + text1.getText() + "\nName : " + text2.getText() + "" +
-                            "\nPrice : " + text3.getText() + "\nQuantitiy : " + text4.getText());
-                    clearText(text1, text2, text3, text4);
-                    flag ++;
                 }
             }
         }
         else if(event.getSource() == find){
-            //System.out.println("Inside find");
-            if (barcode.isSelected()){
-                //System.out.println("barcod");
-                for(Product p : ProductArray){
-                    if(findText.getText() == p.getBardcod()){
-                        output = p.getBardcod() + "\t\t" +p.getName() +"\t\t" + p.getPrice()+"\t\t" +p.getQuantity() ;
-                        big.setText(output);
-                        System.out.println();
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null, "Not Found!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                        break;
-                    }
-                }
+            output = "";
+            fl = 0;
+            if(barcode.isSelected()){
+               for(Product p : ProductArray){
+                   if (findText.getText().equals(p.getBardcod())){
+                       output += p.getBardcod() +"\t\t\t" + p.getName() +"\t\t\t" +p.getPrice() +"\t\t" + p.getQuantity() + "\n";
+                       big.setText(output);
+                       fl++;
+                   }
+
+               }
+               if (fl == 0)
+                   JOptionPane.showMessageDialog(null , "No Matches found!");
+
             }
             else if(product.isSelected()){
+                for (Product p : ProductArray){
+                    arr = findText.getText().trim();
+                    System.out.println(arr);
+                    if (findText.getText().contains(p.getName())){
+                        output += p.getBardcod() +"\t\t\t" + p.getName() +"\t\t\t" +p.getPrice() +"\t\t" + p.getQuantity() + "\n";
 
-                for(Product p : ProductArray){
-                    if(findText.getText().matches(p.getName())){
-                        output += p.getBardcod() + "\t\t" +p.getName() +"\t\t" + p.getPrice()+"\t\t" +p.getQuantity() +"\n";
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null, "Not Found!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                        break;
+                        fl++;
                     }
                 }
-                big.setText(output);
+                if (fl == 0)
+                    JOptionPane.showMessageDialog(null , "No Matches found!");
+                else
+                    big.setText(output);
             }
 
-        }//end of the else of handler
+        }
         }//action performed function
 
     public void clearText(JTextField t1 , JTextField t2 , JTextField t3 , JTextField t4){
@@ -326,5 +346,17 @@ public class Frame extends JFrame implements ActionListener {
         t2.setText("");
         t3.setText("");
         t4.setText("");
+    }
+    public boolean isString(String b){
+        tokens = b.toCharArray();
+
+        for(int i = 0 ; i <tokens.length ;i++){
+
+            if (Character.isLetter(tokens[i])){
+                //System.out.println(tokens[i]);
+                return true;
+            }
+        }
+        return false;
     }
 }//class
