@@ -320,9 +320,9 @@ public class Frame extends JFrame implements ActionListener {
             }
             else if(product.isSelected()){
                 for (Product p : ProductArray){
-                    //arr = findText.getText().trim();
+                    arr = findText.getText().trim();
                     //System.out.println(arr);
-                    if (findText.getText().contains(p.getName())){
+                    if (p.getName().contains(arr)){
                         output += p.getBardcod() +"\t\t\t" + p.getName() +"\t\t\t" +p.getPrice() +"\t\t" + p.getQuantity() + "\n";
                         fl++;
                     }
